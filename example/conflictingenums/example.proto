@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package example;
 
-option go_package = "github.com/utilitywarehouse/protoc-gen-go-enums/example/conflictingenums";
+option go_package = "github.com/daotl/protoc-gen-go-enums/example/conflictingenums";
 
 enum RootEnum {
   UNKNOWN = 0;

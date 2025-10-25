@@ -1,4 +1,4 @@
-module github.com/utilitywarehouse/protoc-gen-go-enums
+module github.com/daotl/protoc-gen-go-enums
 
 go 1.24.0
 
