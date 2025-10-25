@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
-	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var includeNested bool
@@ -45,7 +45,9 @@ type fileEnumGenerator struct {
 }
 
 func newFileEnumGenerator(f *protogen.File, gen *protogen.Plugin) *fileEnumGenerator {
-	gen.SupportedFeatures |= uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+	gen.SupportedFeatures = gengo.SupportedFeatures
+	gen.SupportedEditionsMinimum = descriptorpb.Edition_EDITION_2023
+	gen.SupportedEditionsMaximum = descriptorpb.Edition_EDITION_2024
 
 	return &fileEnumGenerator{f: f, gen: gen, allConsts: make(map[string]struct{})}
 }
