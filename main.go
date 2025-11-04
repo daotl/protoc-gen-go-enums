@@ -132,7 +132,7 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	nameCapsCase := false
-	if !nameCapsCase && opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameCapsCase) {
+	if !namePascalCase && opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameCapsCase) {
 		if ncc, ok := proto.GetExtension(opts,
 			pbgen.E_GenGoEnumsNameCapsCase).(bool); !ok {
 			log.Fatalf(

@@ -21,9 +21,9 @@ extend google.protobuf.EnumOptions {
   // Turn const name into pascal case
   // (apply before  `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
   bool gen_go_enums_name_pascal_case = 91722;
-  // If true convert string const name into CAPS_CASE
-  // (apply before `gen_go_string_consts_name_prefix` and `gen_go_string_consts_name_suffix`).
-  // Can't be used together with gen_go_string_consts_name_pascal_case.
+  // Turn const name into CAPS_CASE
+  // (apply before `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
+  // Can't be used together with gen_go_enums_name_pascal_case.
   bool gen_go_enums_name_caps_case = 91723;
   // Add string prefix to generated Go string constant names.
   string gen_go_enums_name_prefix = 91724;
