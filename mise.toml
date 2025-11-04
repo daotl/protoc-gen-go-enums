@@ -1,0 +1,6 @@
+[tools]
+go = "1.25"
+buf = "1.59.0"
+protoc = "33.0"
+protoc-gen-go = "1.36.10"
+"go:github.com/daotl/protoc-gen-go-enums" = "ae4efde8e4ffded54c0bcdabf8533d8a4c546a6c"

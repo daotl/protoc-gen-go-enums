@@ -1,10 +1,10 @@
-# protoc-gen-go-enums
+syntax = "proto3";
 
-Protobuf plugin that generates go enum names with type prefix stripped.
+package daotl.proto;
+option go_package = "github.com/daotl/protoc-gen-go-enums/pbgen";
 
-Options:
+import "google/protobuf/descriptor.proto";
 
-```proto
 extend google.protobuf.EnumOptions {
   // Enable generation of Go constants from enums with
   // type prefix stripped. (Default: true)
@@ -12,6 +12,3 @@ extend google.protobuf.EnumOptions {
   // Turn const name from snake case into pascal case.
   bool gen_go_enums_name_pascal_case = 91721;
 }
-```
-
-See `example/` for examples.

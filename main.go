@@ -2,11 +2,17 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/daotl/protoc-gen-go-enums/pbgen"
 )
 
 var includeNested bool
@@ -84,6 +90,36 @@ func (eg *fileEnumGenerator) writeHeader() {
 }
 
 func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
+	opts, ok := enum.Desc.Options().(*descriptorpb.EnumOptions)
+	if !ok {
+		log.Fatalf("invalid options type for enum %s", enum.Desc.FullName())
+	}
+	if opts == nil {
+		return seen
+	}
+
+	// If not set, default to true
+	if proto.HasExtension(opts, pbgen.E_GenGoEnums) {
+		if enabled, ok := proto.GetExtension(opts, pbgen.E_GenGoEnums).(bool); !ok {
+			log.Fatalf("invalid type for gen_go_enums option on enum %s", enum.Desc.FullName())
+		} else if !enabled {
+			return seen
+		}
+	}
+
+	namePascalCase := false
+	if proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePascalCase) {
+		if ncc, ok := proto.GetExtension(opts,
+			pbgen.E_GenGoEnumsNamePascalCase).(bool); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_enums_name_pascal_case option on enum %s",
+				enum.Desc.FullName(),
+			)
+		} else {
+			namePascalCase = ncc
+		}
+	}
+
 	if hasClash, clashing := eg.hasConstClash(enum); hasClash {
 		println(fmt.Sprintf("skipped generating constants for enum %v as it would duplicate constant %s", enum.Desc.FullName(), clashing))
 		return seen
@@ -91,7 +127,7 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 
 	eg.gf.P("const (")
 	for _, v := range enum.Values {
-		c := constNameFor(v)
+		c := constNameFor(v, namePascalCase)
 		eg.allConsts[c] = struct{}{}
 		if v.Desc.Options().(*descriptorpb.EnumValueOptions).GetDeprecated() {
 			eg.gf.P("// Deprecated: Do not use.")
@@ -108,7 +144,7 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 
 func (eg *fileEnumGenerator) hasConstClash(enum *protogen.Enum) (bool, string) {
 	for _, v := range enum.Values {
-		constName := constNameFor(v)
+		constName := constNameFor(v, false)
 		if _, exists := eg.allConsts[constName]; exists {
 			return true, constName
 		}
@@ -116,8 +152,12 @@ func (eg *fileEnumGenerator) hasConstClash(enum *protogen.Enum) (bool, string) {
 	return false, ""
 }
 
-func constNameFor(v *protogen.EnumValue) string {
-	return string(v.Desc.Name())
+func constNameFor(v *protogen.EnumValue, namePascalCase bool) string {
+	name := string(v.Desc.Name())
+	if namePascalCase {
+		name = snakeToPascalCase(name)
+	}
+	return name
 }
 
 func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
@@ -133,4 +173,20 @@ func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
 	}
 
 	return typeName + "_" + string(e.Desc.Name())
+}
+
+// snakeToPascalCase converts a snake_case string to PascalCase.
+func snakeToPascalCase(s string) string {
+	parts := strings.Split(s, "_")
+	titleCaser := cases.Title(language.English)
+	if len(parts) == 1 {
+		return titleCaser.String(parts[0])
+	}
+	result := ""
+	for i := range parts {
+		if parts[i] != "" {
+			result += titleCaser.String(parts[i])
+		}
+	}
+	return result
 }
