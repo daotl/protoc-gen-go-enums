@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -94,12 +96,9 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	if !ok {
 		log.Fatalf("invalid options type for enum %s", enum.Desc.FullName())
 	}
-	if opts == nil {
-		return seen
-	}
 
 	// If not set, default to true
-	if proto.HasExtension(opts, pbgen.E_GenGoEnums) {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnums) {
 		if enabled, ok := proto.GetExtension(opts, pbgen.E_GenGoEnums).(bool); !ok {
 			log.Fatalf("invalid type for gen_go_enums option on enum %s", enum.Desc.FullName())
 		} else if !enabled {
@@ -107,32 +106,84 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 		}
 	}
 
+	stripNamePrefix := ""
+	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsStripNamePrefix) {
+		var ok bool
+		if stripNamePrefix, ok = proto.GetExtension(opts,
+			pbgen.E_GenGoEnumsStripNamePrefix).(string); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_string_consts_strip_name_prefix option on enum %s",
+				enum.Desc.FullName(),
+			)
+		}
+	}
+
 	namePascalCase := false
-	if proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePascalCase) {
-		if ncc, ok := proto.GetExtension(opts,
+	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePascalCase) {
+		if npc, ok := proto.GetExtension(opts,
 			pbgen.E_GenGoEnumsNamePascalCase).(bool); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_enums_name_pascal_case option on enum %s",
 				enum.Desc.FullName(),
 			)
 		} else {
-			namePascalCase = ncc
+			namePascalCase = npc
 		}
 	}
 
-	if hasClash, clashing := eg.hasConstClash(enum); hasClash {
+	nameCapsCase := false
+	if !nameCapsCase && opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameCapsCase) {
+		if ncc, ok := proto.GetExtension(opts,
+			pbgen.E_GenGoEnumsNameCapsCase).(bool); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_enums_name_pascal_case option on enum %s",
+				enum.Desc.FullName(),
+			)
+		} else {
+			nameCapsCase = ncc
+		}
+	}
+
+	namePrefix := ""
+	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePrefix) {
+		if np, ok := proto.GetExtension(opts,
+			pbgen.E_GenGoEnumsNamePrefix).(string); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_string_consts_name_prefix option on enum %s",
+				enum.Desc.FullName(),
+			)
+		} else {
+			namePrefix = np
+		}
+	}
+
+	nameSuffix := ""
+	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameSuffix) {
+		if ns, ok := proto.GetExtension(opts,
+			pbgen.E_GenGoEnumsNameSuffix).(string); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_string_consts_name_suffix option on enum %s",
+				enum.Desc.FullName(),
+			)
+		} else {
+			nameSuffix = ns
+		}
+	}
+
+	if hasClash, clashing := eg.hasConstClash(enum, stripNamePrefix, namePascalCase,
+		nameCapsCase, namePrefix, nameSuffix); hasClash {
 		println(fmt.Sprintf("skipped generating constants for enum %v as it would duplicate constant %s", enum.Desc.FullName(), clashing))
 		return seen
 	}
 
 	eg.gf.P("const (")
 	for _, v := range enum.Values {
-		c := constNameFor(v, namePascalCase)
-		eg.allConsts[c] = struct{}{}
+		name := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix)
+		eg.allConsts[name] = struct{}{}
 		if v.Desc.Options().(*descriptorpb.EnumValueOptions).GetDeprecated() {
 			eg.gf.P("// Deprecated: Do not use.")
 		}
-		eg.gf.P(c, " = ", eg.golangValue(v))
+		eg.gf.P(name, " = ", eg.golangValue(v))
 
 		seen++
 	}
@@ -142,9 +193,16 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	return seen
 }
 
-func (eg *fileEnumGenerator) hasConstClash(enum *protogen.Enum) (bool, string) {
+func (eg *fileEnumGenerator) hasConstClash(
+	enum *protogen.Enum,
+	stripNamePrefix string,
+	namePascalCase bool,
+	nameCapsCase bool,
+	namePrefix,
+	nameSuffix string,
+) (bool, string) {
 	for _, v := range enum.Values {
-		constName := constNameFor(v, false)
+		constName := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix)
 		if _, exists := eg.allConsts[constName]; exists {
 			return true, constName
 		}
@@ -152,12 +210,24 @@ func (eg *fileEnumGenerator) hasConstClash(enum *protogen.Enum) (bool, string) {
 	return false, ""
 }
 
-func constNameFor(v *protogen.EnumValue, namePascalCase bool) string {
-	name := string(v.Desc.Name())
+func (eg *fileEnumGenerator) constNameFor(v *protogen.EnumValue,
+	stripNamePrefix string,
+	namePascalCase bool,
+	nameCapsCase bool,
+	namePrefix,
+	nameSuffix string,
+) string {
+	name := string(eg.golangValue(v)) // "FOO_A"
+
+	name,
+		_ = strings.CutPrefix(name, stripNamePrefix) // "A"
 	if namePascalCase {
-		name = snakeToPascalCase(name)
+		name = toPascalCase(name)
+	} else if nameCapsCase {
+		name = toCapsCase(name)
 	}
-	return name
+
+	return namePrefix + name + nameSuffix // "{PREFIX}A{SUFFIX}"
 }
 
 func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
@@ -175,18 +245,63 @@ func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
 	return typeName + "_" + string(e.Desc.Name())
 }
 
-// snakeToPascalCase converts a snake_case string to PascalCase.
-func snakeToPascalCase(s string) string {
+// toPascalCase converts string to PascalCase.
+func toPascalCase(s string) string {
 	parts := strings.Split(s, "_")
-	titleCaser := cases.Title(language.English)
 	if len(parts) == 1 {
-		return titleCaser.String(parts[0])
+		return toPascalCasePart(parts[0])
 	}
 	result := ""
 	for i := range parts {
 		if parts[i] != "" {
-			result += titleCaser.String(parts[i])
+			result += toPascalCasePart(parts[i])
 		}
 	}
 	return result
+}
+
+func toPascalCasePart(s string) string {
+	var titleCaser cases.Caser
+	// If "ALLCAPS" convert to "Allcaps", if "camelCase" convert to "CamelCase"
+	if NoLowercaseASCII(s) {
+		titleCaser = cases.Title(language.English)
+	} else {
+		titleCaser = cases.Title(language.English, cases.NoLower)
+	}
+	return titleCaser.String(s)
+}
+
+func NoLowercaseASCII(s string) bool {
+	return !strings.ContainsAny(s, "abcdefghijklmnopqrstuvwxyz")
+}
+
+// toCapsCase converts strings like "camelCase_PascalCase_CAPS" to "CAMEL_CASE_PASCAL_CASE_CAPS"
+func toCapsCase(s string) string {
+	// First, split by underscores
+	parts := strings.Split(s, "_")
+	result := make([]string, 0, len(parts))
+
+	for _, part := range parts {
+		if part == "" {
+			continue
+		}
+
+		// Convert each part to uppercase
+		// Handle camelCase by inserting underscores before uppercase letters
+		var capsPart strings.Builder
+		for i, r := range part {
+			// Only insert underscore before uppercase letter if the previous character was lowercase
+			// This prevents adding underscores between consecutive uppercase letters
+			if i > 0 && unicode.IsUpper(r) && i < len(part) {
+				prevRune, _ := utf8.DecodeRuneInString(part[i-1:])
+				if unicode.IsLower(prevRune) {
+					capsPart.WriteRune('_')
+				}
+			}
+			capsPart.WriteRune(unicode.ToUpper(r))
+		}
+		result = append(result, capsPart.String())
+	}
+
+	return strings.Join(result, "_")
 }

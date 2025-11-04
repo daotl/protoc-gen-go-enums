@@ -22,3 +22,13 @@ const (
 	OpCodeSessionSetup        = OpCode_OP_CODE_SESSION_SETUP
 	OpCodeSessionTerminate    = OpCode_OP_CODE_SESSION_TERMINATE
 )
+
+const (
+	SampleMessage1InnerEnumUnknown = SampleMessage1_INNER_ENUM_UNKNOWN
+	SampleMessage1InnerEnumVal2    = SampleMessage1_INNER_ENUM_VAL2
+)
+
+const (
+	SAMPLE_MESSAGE2_INNER_ENUM_UNKNOWN = SampleMessage2_INNER_ENUM_UNKNOWN
+	SAMPLE_MESSAGE2_INNER_ENUM_VAL3    = SampleMessage2_INNER_ENUM_VAL3
+)

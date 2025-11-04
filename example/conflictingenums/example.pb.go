@@ -162,19 +162,19 @@ func (OpCode) EnumDescriptor() ([]byte, []int) {
 type SampleMessage1_InnerEnum int32
 
 const (
-	SampleMessage1_UNKNOWN SampleMessage1_InnerEnum = 0
-	SampleMessage1_VAL2    SampleMessage1_InnerEnum = 1
+	SampleMessage1_INNER_ENUM_UNKNOWN SampleMessage1_InnerEnum = 0
+	SampleMessage1_INNER_ENUM_VAL2    SampleMessage1_InnerEnum = 1
 )
 
 // Enum value maps for SampleMessage1_InnerEnum.
 var (
 	SampleMessage1_InnerEnum_name = map[int32]string{
-		0: "UNKNOWN",
-		1: "VAL2",
+		0: "INNER_ENUM_UNKNOWN",
+		1: "INNER_ENUM_VAL2",
 	}
 	SampleMessage1_InnerEnum_value = map[string]int32{
-		"UNKNOWN": 0,
-		"VAL2":    1,
+		"INNER_ENUM_UNKNOWN": 0,
+		"INNER_ENUM_VAL2":    1,
 	}
 )
 
@@ -208,19 +208,19 @@ func (SampleMessage1_InnerEnum) EnumDescriptor() ([]byte, []int) {
 type SampleMessage2_InnerEnum int32
 
 const (
-	SampleMessage2_UNKNOWN SampleMessage2_InnerEnum = 0
-	SampleMessage2_VAL3    SampleMessage2_InnerEnum = 1
+	SampleMessage2_INNER_ENUM_UNKNOWN SampleMessage2_InnerEnum = 0
+	SampleMessage2_INNER_ENUM_VAL3    SampleMessage2_InnerEnum = 1
 )
 
 // Enum value maps for SampleMessage2_InnerEnum.
 var (
 	SampleMessage2_InnerEnum_name = map[int32]string{
-		0: "UNKNOWN",
-		1: "VAL3",
+		0: "INNER_ENUM_UNKNOWN",
+		1: "INNER_ENUM_VAL3",
 	}
 	SampleMessage2_InnerEnum_value = map[string]int32{
-		"UNKNOWN": 0,
-		"VAL3":    1,
+		"INNER_ENUM_UNKNOWN": 0,
+		"INNER_ENUM_VAL3":    1,
 	}
 )
 
@@ -327,18 +327,18 @@ var File_example_proto protoreflect.FileDescriptor
 
 const file_example_proto_rawDesc = "" +
 	"\n" +
-	"\rexample.proto\x12\aexample\x1a#daotl/protoc-gen-go-enums/ext.proto\"4\n" +
-	"\x0eSampleMessage1\"\"\n" +
-	"\tInnerEnum\x12\v\n" +
-	"\aUNKNOWN\x10\x00\x12\b\n" +
-	"\x04VAL2\x10\x01\"4\n" +
-	"\x0eSampleMessage2\"\"\n" +
-	"\tInnerEnum\x12\v\n" +
-	"\aUNKNOWN\x10\x00\x12\b\n" +
-	"\x04VAL3\x10\x01*!\n" +
+	"\rexample.proto\x12\aexample\x1a#daotl/protoc-gen-go-enums/ext.proto\"P\n" +
+	"\x0eSampleMessage1\">\n" +
+	"\tInnerEnum\x12\x16\n" +
+	"\x12INNER_ENUM_UNKNOWN\x10\x00\x12\x13\n" +
+	"\x0fINNER_ENUM_VAL2\x10\x01\x1a\x04\xd0\xe4,\x01\"P\n" +
+	"\x0eSampleMessage2\">\n" +
+	"\tInnerEnum\x12\x16\n" +
+	"\x12INNER_ENUM_UNKNOWN\x10\x00\x12\x13\n" +
+	"\x0fINNER_ENUM_VAL3\x10\x01\x1a\x04\xd8\xe4,\x01*'\n" +
 	"\bRootEnum\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\b\n" +
-	"\x04VAL1\x10\x01*\xe1\x03\n" +
+	"\x04VAL1\x10\x01\x1a\x04\xc0\xe4,\x00*\xec\x03\n" +
 	"\x06OpCode\x12\x14\n" +
 	"\x10OP_CODE_RESERVED\x10\x00\x12\x16\n" +
 	"\x12OP_CODE_RESOLUTION\x10\x01\x12\x18\n" +
@@ -356,7 +356,7 @@ const file_example_proto_rawDesc = "" +
 	"\x15OP_CODE_UNHOME_PREFIX\x10\xad\x02\x12 \n" +
 	"\x1bOP_CODE_LIST_HOMED_PREFIXES\x10\xae\x02\x12\x1a\n" +
 	"\x15OP_CODE_SESSION_SETUP\x10\x90\x03\x12\x1e\n" +
-	"\x19OP_CODE_SESSION_TERMINATE\x10\x91\x03\x1a\x04\xc0\xe4,\x01B?Z=github.com/daotl/protoc-gen-go-enums/example/conflictingenumsb\x06proto3"
+	"\x19OP_CODE_SESSION_TERMINATE\x10\x91\x03\x1a\x0f\xca\xe4,\aOpCode_\xd0\xe4,\x01B?Z=github.com/daotl/protoc-gen-go-enums/example/conflictingenumsb\x06proto3"
 
 var (
 	file_example_proto_rawDescOnce sync.Once
