@@ -98,8 +98,8 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	// If not set, default to true
-	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnums) {
-		if enabled, ok := proto.GetExtension(opts, pbgen.E_GenGoEnums).(bool); !ok {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_Enabled) {
+		if enabled, ok := proto.GetExtension(opts, pbgen.E_Enabled).(bool); !ok {
 			log.Fatalf("invalid type for gen_go_enums option on enum %s", enum.Desc.FullName())
 		} else if !enabled {
 			return seen
@@ -107,10 +107,10 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	stripNamePrefix := ""
-	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsStripNamePrefix) {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_StripNamePrefix) {
 		var ok bool
 		if stripNamePrefix, ok = proto.GetExtension(opts,
-			pbgen.E_GenGoEnumsStripNamePrefix).(string); !ok {
+			pbgen.E_StripNamePrefix).(string); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_string_consts_strip_name_prefix option on enum %s",
 				enum.Desc.FullName(),
@@ -119,9 +119,9 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	namePascalCase := false
-	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePascalCase) {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_NamePascalCase) {
 		if npc, ok := proto.GetExtension(opts,
-			pbgen.E_GenGoEnumsNamePascalCase).(bool); !ok {
+			pbgen.E_NamePascalCase).(bool); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_enums_name_pascal_case option on enum %s",
 				enum.Desc.FullName(),
@@ -132,9 +132,9 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	nameCapsCase := false
-	if !namePascalCase && opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameCapsCase) {
+	if !namePascalCase && opts != nil && proto.HasExtension(opts, pbgen.E_NameCapsCase) {
 		if ncc, ok := proto.GetExtension(opts,
-			pbgen.E_GenGoEnumsNameCapsCase).(bool); !ok {
+			pbgen.E_NameCapsCase).(bool); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_enums_name_pascal_case option on enum %s",
 				enum.Desc.FullName(),
@@ -145,9 +145,9 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	namePrefix := ""
-	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNamePrefix) {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_NamePrefix) {
 		if np, ok := proto.GetExtension(opts,
-			pbgen.E_GenGoEnumsNamePrefix).(string); !ok {
+			pbgen.E_NamePrefix).(string); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_string_consts_name_prefix option on enum %s",
 				enum.Desc.FullName(),
@@ -158,9 +158,9 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 	}
 
 	nameSuffix := ""
-	if opts != nil && proto.HasExtension(opts, pbgen.E_GenGoEnumsNameSuffix) {
+	if opts != nil && proto.HasExtension(opts, pbgen.E_NameSuffix) {
 		if ns, ok := proto.GetExtension(opts,
-			pbgen.E_GenGoEnumsNameSuffix).(string); !ok {
+			pbgen.E_NameSuffix).(string); !ok {
 			log.Fatalf(
 				"invalid type for gen_go_string_consts_name_suffix option on enum %s",
 				enum.Desc.FullName(),

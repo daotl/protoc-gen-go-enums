@@ -15,20 +15,20 @@ Enum options:
 ```proto
 extend google.protobuf.EnumOptions {
   // Enable generation of renamed Go constants from enums. (Default: true)
-  bool gen_go_enums = 91720;
+  bool enabled = 91720;
   // Strip prefix. (Default: true)
-  string gen_go_enums_strip_name_prefix = 91721;
+  string strip_name_prefix = 91721;
   // Turn const name into pascal case
-  // (apply before  `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
-  bool gen_go_enums_name_pascal_case = 91722;
+  // (apply before  `name_prefix` and `name_suffix`).
+  bool name_pascal_case = 91722;
   // Turn const name into CAPS_CASE
-  // (apply before `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
-  // Can't be used together with gen_go_enums_name_pascal_case.
-  bool gen_go_enums_name_caps_case = 91723;
+  // (apply before `name_prefix` and `name_suffix`).
+  // Can't be used together with name_pascal_case.
+  bool name_caps_case = 91723;
   // Add string prefix to generated Go string constant names.
-  string gen_go_enums_name_prefix = 91724;
+  string name_prefix = 91724;
   // Add string suffix to generated Go string constant names.
-  string gen_go_enums_name_suffix = 91725;
+  string name_suffix = 91725;
 }
 ```
 

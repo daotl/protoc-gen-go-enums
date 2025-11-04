@@ -7,14 +7,14 @@ import "daotl/protoc-gen-go-enums/ext.proto";
 option go_package = "github.com/daotl/protoc-gen-go-enums/example/conflictingenums";
 
 enum RootEnum {
-  option (daotl.proto.gen_go_enums) = false;
+  option (daotl.gen_go_enums.enabled) = false;
   UNKNOWN = 0;
   VAL1 = 1;
 }
 
 message SampleMessage1 {
   enum InnerEnum {
-    option (daotl.proto.gen_go_enums_name_pascal_case) = true;
+    option (daotl.gen_go_enums.name_pascal_case) = true;
     INNER_ENUM_UNKNOWN = 0;
     INNER_ENUM_VAL2 = 1;
   }
@@ -22,15 +22,15 @@ message SampleMessage1 {
 
 message SampleMessage2 {
   enum InnerEnum {
-    option (daotl.proto.gen_go_enums_name_caps_case) = true;
+    option (daotl.gen_go_enums.name_caps_case) = true;
     INNER_ENUM_UNKNOWN = 0;
     INNER_ENUM_VAL3 = 1;
   }
 }
 
 enum OpCode {
-  option (daotl.proto.gen_go_enums_strip_name_prefix) = "OpCode_";
-  option (daotl.proto.gen_go_enums_name_pascal_case) = true;
+  option (daotl.gen_go_enums.strip_name_prefix) = "OpCode_";
+  option (daotl.gen_go_enums.name_pascal_case) = true;
 
   OP_CODE_RESERVED = 0;
   OP_CODE_RESOLUTION = 1;

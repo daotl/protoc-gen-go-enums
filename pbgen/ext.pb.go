@@ -26,48 +26,48 @@ var file_ext_proto_extTypes = []protoimpl.ExtensionInfo{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         91720,
-		Name:          "daotl.gen_go_enums.gen_go_enums",
-		Tag:           "varint,91720,opt,name=gen_go_enums",
+		Name:          "daotl.gen_go_enums.enabled",
+		Tag:           "varint,91720,opt,name=enabled",
 		Filename:      "ext.proto",
 	},
 	{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         91721,
-		Name:          "daotl.gen_go_enums.gen_go_enums_strip_name_prefix",
-		Tag:           "bytes,91721,opt,name=gen_go_enums_strip_name_prefix",
+		Name:          "daotl.gen_go_enums.strip_name_prefix",
+		Tag:           "bytes,91721,opt,name=strip_name_prefix",
 		Filename:      "ext.proto",
 	},
 	{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         91722,
-		Name:          "daotl.gen_go_enums.gen_go_enums_name_pascal_case",
-		Tag:           "varint,91722,opt,name=gen_go_enums_name_pascal_case",
+		Name:          "daotl.gen_go_enums.name_pascal_case",
+		Tag:           "varint,91722,opt,name=name_pascal_case",
 		Filename:      "ext.proto",
 	},
 	{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         91723,
-		Name:          "daotl.gen_go_enums.gen_go_enums_name_caps_case",
-		Tag:           "varint,91723,opt,name=gen_go_enums_name_caps_case",
+		Name:          "daotl.gen_go_enums.name_caps_case",
+		Tag:           "varint,91723,opt,name=name_caps_case",
 		Filename:      "ext.proto",
 	},
 	{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         91724,
-		Name:          "daotl.gen_go_enums.gen_go_enums_name_prefix",
-		Tag:           "bytes,91724,opt,name=gen_go_enums_name_prefix",
+		Name:          "daotl.gen_go_enums.name_prefix",
+		Tag:           "bytes,91724,opt,name=name_prefix",
 		Filename:      "ext.proto",
 	},
 	{
 		ExtendedType:  (*descriptorpb.EnumOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         91725,
-		Name:          "daotl.gen_go_enums.gen_go_enums_name_suffix",
-		Tag:           "bytes,91725,opt,name=gen_go_enums_name_suffix",
+		Name:          "daotl.gen_go_enums.name_suffix",
+		Tag:           "bytes,91725,opt,name=name_suffix",
 		Filename:      "ext.proto",
 	},
 }
@@ -76,57 +76,58 @@ var file_ext_proto_extTypes = []protoimpl.ExtensionInfo{
 var (
 	// Enable generation of renamed Go constants from enums. (Default: true)
 	//
-	// optional bool gen_go_enums = 91720;
-	E_GenGoEnums = &file_ext_proto_extTypes[0]
+	// optional bool enabled = 91720;
+	E_Enabled = &file_ext_proto_extTypes[0]
 	// Strip prefix. (Default: true)
 	//
-	// optional string gen_go_enums_strip_name_prefix = 91721;
-	E_GenGoEnumsStripNamePrefix = &file_ext_proto_extTypes[1]
+	// optional string strip_name_prefix = 91721;
+	E_StripNamePrefix = &file_ext_proto_extTypes[1]
 	// Turn const name into pascal case
-	// (apply before  `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
+	// (apply before  `name_prefix` and `name_suffix`).
 	//
-	// optional bool gen_go_enums_name_pascal_case = 91722;
-	E_GenGoEnumsNamePascalCase = &file_ext_proto_extTypes[2]
+	// optional bool name_pascal_case = 91722;
+	E_NamePascalCase = &file_ext_proto_extTypes[2]
 	// Turn const name into CAPS_CASE
-	// (apply before `gen_go_enums_name_prefix` and `gen_go_enums_name_suffix`).
-	// Can't be used together with gen_go_enums_name_pascal_case.
+	// (apply before `name_prefix` and `name_suffix`).
+	// Can't be used together with name_pascal_case.
 	//
-	// optional bool gen_go_enums_name_caps_case = 91723;
-	E_GenGoEnumsNameCapsCase = &file_ext_proto_extTypes[3]
+	// optional bool name_caps_case = 91723;
+	E_NameCapsCase = &file_ext_proto_extTypes[3]
 	// Add string prefix to generated Go string constant names.
 	//
-	// optional string gen_go_enums_name_prefix = 91724;
-	E_GenGoEnumsNamePrefix = &file_ext_proto_extTypes[4]
+	// optional string name_prefix = 91724;
+	E_NamePrefix = &file_ext_proto_extTypes[4]
 	// Add string suffix to generated Go string constant names.
 	//
-	// optional string gen_go_enums_name_suffix = 91725;
-	E_GenGoEnumsNameSuffix = &file_ext_proto_extTypes[5]
+	// optional string name_suffix = 91725;
+	E_NameSuffix = &file_ext_proto_extTypes[5]
 )
 
 var File_ext_proto protoreflect.FileDescriptor
 
 const file_ext_proto_rawDesc = "" +
 	"\n" +
-	"\text.proto\x12\x12daotl.gen_go_enums\x1a google/protobuf/descriptor.proto:@\n" +
-	"\fgen_go_enums\x12\x1c.google.protobuf.EnumOptions\x18\xc8\xcc\x05 \x01(\bR\n" +
-	"genGoEnums:a\n" +
-	"\x1egen_go_enums_strip_name_prefix\x12\x1c.google.protobuf.EnumOptions\x18\xc9\xcc\x05 \x01(\tR\x19genGoEnumsStripNamePrefix:_\n" +
-	"\x1dgen_go_enums_name_pascal_case\x12\x1c.google.protobuf.EnumOptions\x18\xca\xcc\x05 \x01(\bR\x18genGoEnumsNamePascalCase:[\n" +
-	"\x1bgen_go_enums_name_caps_case\x12\x1c.google.protobuf.EnumOptions\x18\xcb\xcc\x05 \x01(\bR\x16genGoEnumsNameCapsCase:V\n" +
-	"\x18gen_go_enums_name_prefix\x12\x1c.google.protobuf.EnumOptions\x18\xcc\xcc\x05 \x01(\tR\x14genGoEnumsNamePrefix:V\n" +
-	"\x18gen_go_enums_name_suffix\x12\x1c.google.protobuf.EnumOptions\x18\xcd\xcc\x05 \x01(\tR\x14genGoEnumsNameSuffixB\xaf\x01\n" +
+	"\text.proto\x12\x12daotl.gen_go_enums\x1a google/protobuf/descriptor.proto:8\n" +
+	"\aenabled\x12\x1c.google.protobuf.EnumOptions\x18\xc8\xcc\x05 \x01(\bR\aenabled:J\n" +
+	"\x11strip_name_prefix\x12\x1c.google.protobuf.EnumOptions\x18\xc9\xcc\x05 \x01(\tR\x0fstripNamePrefix:H\n" +
+	"\x10name_pascal_case\x12\x1c.google.protobuf.EnumOptions\x18\xca\xcc\x05 \x01(\bR\x0enamePascalCase:D\n" +
+	"\x0ename_caps_case\x12\x1c.google.protobuf.EnumOptions\x18\xcb\xcc\x05 \x01(\bR\fnameCapsCase:?\n" +
+	"\vname_prefix\x12\x1c.google.protobuf.EnumOptions\x18\xcc\xcc\x05 \x01(\tR\n" +
+	"namePrefix:?\n" +
+	"\vname_suffix\x12\x1c.google.protobuf.EnumOptions\x18\xcd\xcc\x05 \x01(\tR\n" +
+	"nameSuffixB\xaf\x01\n" +
 	"\x16com.daotl.gen_go_enumsB\bExtProtoP\x01Z*github.com/daotl/protoc-gen-go-enums/pbgen\xa2\x02\x03DGX\xaa\x02\x10Daotl.GenGoEnums\xca\x02\x10Daotl\\GenGoEnums\xe2\x02\x1cDaotl\\GenGoEnums\\GPBMetadata\xea\x02\x11Daotl::GenGoEnumsb\x06proto3"
 
 var file_ext_proto_goTypes = []any{
 	(*descriptorpb.EnumOptions)(nil), // 0: google.protobuf.EnumOptions
 }
 var file_ext_proto_depIdxs = []int32{
-	0, // 0: daotl.gen_go_enums.gen_go_enums:extendee -> google.protobuf.EnumOptions
-	0, // 1: daotl.gen_go_enums.gen_go_enums_strip_name_prefix:extendee -> google.protobuf.EnumOptions
-	0, // 2: daotl.gen_go_enums.gen_go_enums_name_pascal_case:extendee -> google.protobuf.EnumOptions
-	0, // 3: daotl.gen_go_enums.gen_go_enums_name_caps_case:extendee -> google.protobuf.EnumOptions
-	0, // 4: daotl.gen_go_enums.gen_go_enums_name_prefix:extendee -> google.protobuf.EnumOptions
-	0, // 5: daotl.gen_go_enums.gen_go_enums_name_suffix:extendee -> google.protobuf.EnumOptions
+	0, // 0: daotl.gen_go_enums.enabled:extendee -> google.protobuf.EnumOptions
+	0, // 1: daotl.gen_go_enums.strip_name_prefix:extendee -> google.protobuf.EnumOptions
+	0, // 2: daotl.gen_go_enums.name_pascal_case:extendee -> google.protobuf.EnumOptions
+	0, // 3: daotl.gen_go_enums.name_caps_case:extendee -> google.protobuf.EnumOptions
+	0, // 4: daotl.gen_go_enums.name_prefix:extendee -> google.protobuf.EnumOptions
+	0, // 5: daotl.gen_go_enums.name_suffix:extendee -> google.protobuf.EnumOptions
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
