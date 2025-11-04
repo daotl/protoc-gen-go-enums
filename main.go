@@ -219,8 +219,7 @@ func (eg *fileEnumGenerator) constNameFor(v *protogen.EnumValue,
 ) string {
 	name := string(eg.golangValue(v)) // "FOO_A"
 
-	name,
-		_ = strings.CutPrefix(name, stripNamePrefix) // "A"
+	name, _ = strings.CutPrefix(name, stripNamePrefix) // "A"
 	if namePascalCase {
 		name = toPascalCase(name)
 	} else if nameCapsCase {
