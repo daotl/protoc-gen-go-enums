@@ -7,7 +7,7 @@ Options:
 ```sh
 protoc --go-enums_out=. \
 --go-enums_opt=paths=source_relative \
---go-enums_opt=include_nested=true 
+--go-enums_opt=include_nested=true
 ```
 
 Enum options:
