@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package uint32;
+
+import "daotl/protoc-gen-go-enums/ext.proto";
+
+option go_package = "github.com/daotl/protoc-gen-go-enums/example/uint32";
+
+enum OpCode {
+  option (daotl.gen_go_enums.strip_name_prefix) = "OpCode_";
+  option (daotl.gen_go_enums.uint32) = true;
+
+  OP_CODE_RESERVED = 0;
+  OP_CODE_START    = 1;
+  OP_CODE_STOP     = 2;
+  OP_CODE_PAUSE    = 3;
+}

@@ -170,20 +170,33 @@ func (eg *fileEnumGenerator) processEnum(enum *protogen.Enum) (seen int) {
 		}
 	}
 
+	uint32Option := false
+	if opts != nil && proto.HasExtension(opts, pbgen.E_Uint32) {
+		if u, ok := proto.GetExtension(opts,
+			pbgen.E_Uint32).(bool); !ok {
+			log.Fatalf(
+				"invalid type for gen_go_string_consts_uint32 option on enum %s",
+				enum.Desc.FullName(),
+			)
+		} else {
+			uint32Option = u
+		}
+	}
+
 	if hasClash, clashing := eg.hasConstClash(enum, stripNamePrefix, namePascalCase,
-		nameCapsCase, namePrefix, nameSuffix); hasClash {
+		nameCapsCase, namePrefix, nameSuffix, uint32Option); hasClash {
 		println(fmt.Sprintf("skipped generating constants for enum %v as it would duplicate constant %s", enum.Desc.FullName(), clashing))
 		return seen
 	}
 
 	eg.gf.P("const (")
 	for _, v := range enum.Values {
-		name := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix)
+		name := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix, uint32Option)
 		eg.allConsts[name] = struct{}{}
 		if v.Desc.Options().(*descriptorpb.EnumValueOptions).GetDeprecated() {
 			eg.gf.P("// Deprecated: Do not use.")
 		}
-		eg.gf.P(name, " = ", eg.golangValue(v))
+		eg.gf.P(name, " = ", eg.golangValue(v, uint32Option))
 
 		seen++
 	}
@@ -200,9 +213,10 @@ func (eg *fileEnumGenerator) hasConstClash(
 	nameCapsCase bool,
 	namePrefix,
 	nameSuffix string,
+	uint32Option bool,
 ) (bool, string) {
 	for _, v := range enum.Values {
-		constName := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix)
+		constName := eg.constNameFor(v, stripNamePrefix, namePascalCase, nameCapsCase, namePrefix, nameSuffix, uint32Option)
 		if _, exists := eg.allConsts[constName]; exists {
 			return true, constName
 		}
@@ -216,8 +230,9 @@ func (eg *fileEnumGenerator) constNameFor(v *protogen.EnumValue,
 	nameCapsCase bool,
 	namePrefix,
 	nameSuffix string,
+	uint32Option bool,
 ) string {
-	name := eg.golangValue(v) // "FOO_A"
+	name := eg.golangValue(v, false) // "FOO_A" (use false here as we only need the raw name for processing)
 
 	name, _ = strings.CutPrefix(name, stripNamePrefix) // "A"
 	if namePascalCase {
@@ -229,7 +244,7 @@ func (eg *fileEnumGenerator) constNameFor(v *protogen.EnumValue,
 	return namePrefix + name + nameSuffix // "{PREFIX}A{SUFFIX}"
 }
 
-func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
+func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue, uint32Option bool) string {
 	pkg := string(eg.f.Desc.Package())
 	typeName := strings.TrimPrefix(string(e.Parent.Desc.FullName()), ".")
 	typeName = strings.TrimPrefix(typeName, pkg+".")
@@ -241,7 +256,11 @@ func (eg *fileEnumGenerator) golangValue(e *protogen.EnumValue) string {
 		typeName = parts[0]
 	}
 
-	return typeName + "_" + string(e.Desc.Name())
+	enumValue := typeName + "_" + string(e.Desc.Name())
+	if uint32Option {
+		return "uint32(" + enumValue + ")"
+	}
+	return enumValue
 }
 
 // toPascalCase converts string to PascalCase.

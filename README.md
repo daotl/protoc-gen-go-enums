@@ -29,6 +29,8 @@ extend google.protobuf.EnumOptions {
   string name_prefix = 91724;
   // Add string suffix to generated Go string constant names.
   string name_suffix = 91725;
+  // Generate uint32 constants instead of default int32 constants.
+  bool uint32 = 91726;
 }
 ```
 
